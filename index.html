@@ -24,9 +24,34 @@
             <div>店長が出した手は？　<span id="pc_hands"></span></div>
         <p id="echo"></p>
             <div id="judgement">判定は？</div>
-        </h4>   
+        </h4> 
+        <h5>負けた人だけ　ルーレット</h5>
+        <h6></h6>
+      <div class="wrapper">
+                <div id="result" class="result"></div>
+                <ul id="number" class="number">
+                </ul>
+                <p>01番-05番　ミニチョコ <img src="img/minichoco.jpeg" width="80"></p>
+                <p>05番-08番　ミニクッキー <img src="img/cookies.png" width="80"></p>
+                <p>09番-10番　ドリップコーヒー <img src="img/coffee01_blend.png" width="50"></p>
+                <div class="wrapper-button">
+                  <button id="button" class="button">START</button>
+                </div>             
+    <audio id="sound-play" preload="auto">
+        <source src="start.mp3" type="audio/mp3">
+      </audio>
+      <audio id="sound-pause" preload="auto">
+        <source src="pause.mp3" type="audio/mp3">
+      </audio>  
+      <audio id="sound-play" preload="auto">
+        <source src="start.mp3" type="audio/mp3">
+      </audio>
+      <audio id="sound-pause" preload="auto">
+        <source src="pause.mp3" type="audio/mp3">
+      </audio>
+        </h5>
+           </div>      
     </main>
-
     <footer>リトルスターカフェ、2024さくらまつり実行員会</footer>
     <script>
     // グー
@@ -48,7 +73,8 @@
     if(r==3){
         view = '<img src="par.png" width="100">';
         $("#pc_hands").text("パー");
-        $("#judgement").text("あなたの負け、残念！また来てね");
+        $("#judgement").text("負けるが勝ちよ、ルーレット！");
+");
     }
         //3.表示処理
     $("#echo").html(view);
@@ -62,7 +88,7 @@
     if(r==1){
         view = '<img src="gu.png" width="100">';
         $("#pc_hands").text("グー");
-        $("#judgement").text("あなたの負け、残念！また来てね");
+        $("#judgement").text("負けるが勝ちよ、ルーレット！");
     }
     if(r==2){
         view = '<img src="choki.png" width="100">';
@@ -92,19 +118,65 @@ $("#par_btn").on("click", function(){
     if(r==2){
         view = '<img src="choki.png" width="100">';
         $("#pc_hands").text("チョキ");        
-        $("#judgement").text("あなたの負けです、残念！また来てね");
+        $("#judgement").text("負けるが勝ちよ、ルーレット！");
     }
     if(r==3){
         view = '<img src="par.png" width="100">';
         $("#pc_hands").text("パー");
         $("#judgement").text("あいこです。もう一回！");
-
     }
         //3.表示処理
     $("#echo").html(view);
 })
 
+$(function(){
+  "use strict";
+  var
+    max = 10,
+    bingo = [],
+    status = true,
+    roulette,
+    random,
+    number,
+    result,
+    $number = $("#number"),
+    $result = $("#result"),
+    $sound_play = $("#sound-play"),
+    $sound_pause = $("#sound-pause");
+    for(var i = 1; i <= max; i++) {
+    bingo.push(i);
+    $number.append($("<li>").text(("0" + i).slice(-2)));
+  }
+
+  $("#button").on("click", function(){
+    if(status) {
+      status = false;
+      $(this).text("STOP");
+      $sound_play.trigger("play");
+      $sound_pause.trigger("pause");
+      $sound_pause[0].currentTime = 0;
+
+      roulette = setInterval(function(){
+        random = Math.floor(Math.random() * bingo.length);
+        number = bingo[random];
+        $result.text(number);
+      }, 10);
+    } else {
+      status = true;
+      $(this).text("START");
+      $sound_pause.trigger("play");
+      $sound_play.trigger("pause");
+      $sound_play[0].currentTime = 0;
+
+      clearInterval(roulette);
+
+      result = bingo[random];
+      bingo.splice(random, 1);
+      $result.text(result);
+      $number.find("li").eq(parseInt(result, 10) - 1).addClass("hit");
+    }
+  });
+});
 </script>
 </body>
-
 </html>
